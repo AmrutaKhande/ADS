@@ -1,0 +1,113 @@
+#include<iostream>
+#define MAX 7
+using namespace std;
+
+class MedicalRecordSystem {
+private:
+    struct Record {
+        int patientID;
+        string patientName;
+        string medicalHistory;
+        string treatmentPlan;
+        Record* next;
+    };
+    Record* ht[MAX];
+
+public:
+    MedicalRecordSystem() {
+        for (int i = 0; i < MAX; i++) {
+            ht[i] = NULL;
+        }
+    }
+
+    void insertRecord() {
+        Record* newRecord = new Record;
+        cout << "\nEnter patient ID: ";
+        cin >> newRecord->patientID;
+        cout << "Enter patient name: ";
+        cin >> newRecord->patientName;
+        cout << "Enter medical history: ";
+        cin >> newRecord->medicalHistory;
+        cout << "Enter treatment plan: ";
+        cin >> newRecord->treatmentPlan;
+        newRecord->next = NULL;
+
+        int index = newRecord->patientID % MAX;
+        if (ht[index] == NULL) {
+            ht[index] = newRecord;
+        }
+        else {
+            Record* current = ht[index];
+            while (current->next != NULL) {
+                current = current->next;
+            }
+            current->next = newRecord;
+        }
+    }
+
+    void displayRecords() {
+        cout << "\nPatient Records:";
+        cout << "\nID\tName\tHistory\tPlan";
+        for (int i = 0; i < MAX; i++) {
+            Record* current = ht[i];
+            while (current != NULL) {
+                cout << "\n" << current->patientID << "\t" << current->patientName << "\t" << current->medicalHistory << "\t" << current->treatmentPlan;
+                current = current->next;
+            }
+        }
+    }
+
+    void searchRecord() {
+        int patientID;
+        cout << "\nEnter patient ID to search: ";
+        cin >> patientID;
+        int index = patientID % MAX;
+        Record* current = ht[index];
+        while (current != NULL && current->patientID != patientID) {
+            current = current->next;
+        }
+        if (current == NULL) {
+            cout << "\nPatient record not found.";
+        }
+        else {
+            cout << "\nPatient record found:";
+            cout << "\nID\tName\tHistory\tPlan";
+            cout << "\n" << current->patientID << "\t" << current->patientName << "\t" << current->medicalHistory << "\t" << current->treatmentPlan;
+        }
+    }
+};
+
+int main() {
+    MedicalRecordSystem system;
+    int choice;
+    char press;
+    do {
+        cout << "\n----------------------";
+        cout << "\nMedical Record System";
+        cout << "\n----------------------";
+        cout << "\n1. Insert Record";
+        cout << "\n2. Display Records";
+        cout << "\n3. Search Record";
+        cout << "\n4. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            system.insertRecord();
+            break;
+        case 2:
+            system.displayRecords();
+            break;
+        case 3:
+            system.searchRecord();
+            break;
+        case 4:
+            exit(0);
+        default:
+            cout << "\nInvalid choice!";
+        }
+        cout << "\nDo you want to continue (y/n)? ";
+        cin >> press;
+    } while (press == 'y' || press == 'Y');
+    return 0;
+}
